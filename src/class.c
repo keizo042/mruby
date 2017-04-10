@@ -132,13 +132,14 @@ mrb_class_outer_module(mrb_state *mrb, struct RClass *c)
   outer = mrb_obj_iv_get(mrb, (struct RObject*)c, mrb_intern_lit(mrb, "__outer__"));
   if (mrb_nil_p(outer)) return NULL;
   cls = mrb_class_ptr(outer);
-  if (cls->tt == MRB_TT_SCLASS)
-  {
-    mrb_value klass;
+  mrb_value klass;
+  for(;;) {
+    if (cls->tt != MRB_TT_SCLASS) break;
     klass = mrb_obj_iv_get(mrb, (struct RObject *)cls,
                            mrb_intern_lit(mrb, "__attached__"));
     cls = mrb_class_ptr(klass);
   }
+
   return cls;
 }
 
